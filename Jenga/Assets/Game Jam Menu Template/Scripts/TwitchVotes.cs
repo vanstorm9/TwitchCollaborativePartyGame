@@ -20,9 +20,10 @@ public class TwitchVotes : MonoBehaviour {
 	}
 
 	// Update is called once per frame
+	float timeStamp;
 	Dictionary<string, int> voteList = new Dictionary<string, int>();
 	void Update() {
-		if (gameTurn == 2) {
+		if (gameTurn == 2 || Input.GetKey("return")) {
 			if (!timeUp) {
 				string vote = getUserInput();
 				if (!(vote.Equals("Timed out")) && !(voteList.ContainsKey(vote))) {
@@ -30,9 +31,10 @@ public class TwitchVotes : MonoBehaviour {
 				}
 				else if (voteList.ContainsKey(vote))
 					voteList[vote] += 1;
+				startCountDown(timeStamp);
 			}
 			else {
-				float timeStamp = Time.time + cooldown;
+				timeStamp = Time.time + cooldown;
 				startCountDown(timeStamp);
 				timeUp = false;
 			}
@@ -44,6 +46,10 @@ public class TwitchVotes : MonoBehaviour {
 	private void startCountDown(float timeStamp) {
 
 		if (timeStamp <= Time.time) {
+			foreach (KeyValuePair<string, int> entry in voteList) {
+				Debug.Log(entry.Key + entry.Value);
+			}
+			voteList.Clear();
 			timeUp = true;
 			gameTurn = 0;
 		}
