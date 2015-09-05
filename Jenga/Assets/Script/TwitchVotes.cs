@@ -9,51 +9,73 @@ public class TwitchVotes : MonoBehaviour {
 	string oauth;
 	string server;
 	private static string[] validVotes = { "up", "down" };
+	int gameTurn = 0, cooldown = 3;
+	bool timeUp = true;
 
 	// Use this for initialization
-	void Start () {
+	void Start() {
 		//ThreadStart ts = new ThreadStart(getUserInput);
 		//Thread thread = new Thread(ts);
 		//thread.Start();
 	}
-	
+
 	// Update is called once per frame
-	List<string> test = new List<string>();
-	void Update () {
-		Debug.Log("Entering");
-		if(Input.GetKey("space")){
-			Debug.Log(getUserInput());
+	Dictionary<string, int> voteList = new Dictionary<string, int>();
+	void Update() {
+		if (gameTurn == 2) {
+			if (!timeUp) {
+				string vote = getUserInput();
+				if (!(vote.Equals("Timed out")) && !(voteList.ContainsKey(vote))) {
+					voteList.Add(vote, 1);
+				}
+				else if (voteList.ContainsKey(vote))
+					voteList[vote] += 1;
+			}
+			else {
+				float timeStamp = Time.time + cooldown;
+				startCountDown(timeStamp);
+				timeUp = false;
+			}
 		}
 		//if time to start vote, start vote
 		//else if time is out, close the thread once
 	}
 
-	private string getUserInput(){
+	private void startCountDown(float timeStamp) {
+
+		if (timeStamp <= Time.time) {
+			timeUp = true;
+			gameTurn = 0;
+		}
+		
+	}
+
+	private string getUserInput() {
 		port = 6667;
 		oauth = "oauth:yhhitgb0bogh4rc1o48s45jo3lks6z";
 		server = "irc.twitch.tv";
-		System.Net.Sockets.TcpClient sock = new System.Net.Sockets.TcpClient ();
-		sock.ReceiveTimeout = 3000;
-		sock.Connect (server, port);
+		System.Net.Sockets.TcpClient sock = new System.Net.Sockets.TcpClient();
+		sock.ReceiveTimeout = cooldown * 1000;
+		sock.Connect(server, port);
 		if (!sock.Connected) {
-			Debug.Log ("not working");
-			
-			
+			Debug.Log("not working");
+
+
 		}
 		System.IO.TextWriter output;
 		System.IO.TextReader input;
-		output = new System.IO.StreamWriter (sock.GetStream ());
-		input = new System.IO.StreamReader (sock.GetStream ());
-		output.Write (
-			
+		output = new System.IO.StreamWriter(sock.GetStream());
+		input = new System.IO.StreamReader(sock.GetStream());
+		output.Write(
+
 			"PASS " + oauth + "\r\n" +
 			"NICK " + "Sail338" + "\r\n" +
 			"USER " + "Sail338" + "\r\n" +
-			"JOIN " 	+ "#sail338" + "" + "\r\n"
-			
-			
+			"JOIN " + "#sail338" + "" + "\r\n"
+
+
 			);
-		output.Flush ();
+		output.Flush();
 		try {
 			for (string rep = input.ReadLine(); ; rep = input.ReadLine()) {
 				string[] splitted = rep.Split(':');
@@ -65,7 +87,7 @@ public class TwitchVotes : MonoBehaviour {
 			}
 		}
 		catch {
-			return "";
+			return "Timed out";
 		}
 	}
 }
