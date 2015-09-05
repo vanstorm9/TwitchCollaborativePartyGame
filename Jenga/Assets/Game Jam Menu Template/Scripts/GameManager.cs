@@ -41,9 +41,10 @@ public class GameManager : MonoBehaviour {
 	//public int numBars = 2;
 	//Vector3 [] tower_position_ary = new Vector3[]{new Vector3(5f,0f,0f),new Vector3(1f,20f,0.5f)};
 	public InitPositionInfo[] init_state_array = new InitPositionInfo[]{ 
-		new InitPositionInfo(new Vector3(5f,0f,0f),Quaternion.Euler(new Vector3(0f,90f,0f))  )
-		,new InitPositionInfo(new Vector3(5f,10f,0f),Quaternion.identity )
-		,new InitPositionInfo(new Vector3(10f,2f,5f),Quaternion.Euler(new Vector3(0f,90f,20f)) )
+		new InitPositionInfo(new Vector3(0f,0f,0f),Quaternion.Euler(new Vector3(0f,90f,0f))),
+		new InitPositionInfo(new Vector3(0f, 0f, 5f),Quaternion.Euler(new Vector3(0f, 90f, 0f)))
+		,new InitPositionInfo(new Vector3(0f,10f,0f),Quaternion.identity)
+		//,new InitPositionInfo(new Vector3(10f,2f,5f),Quaternion.Euler(new Vector3(0f,90f,20f)) )
 	};
 
 	void init()
@@ -54,7 +55,7 @@ public class GameManager : MonoBehaviour {
 		foreach(InitPositionInfo init_state in init_state_array)
 		{
 			//GameObject.Instantiate(Resources.Load("Bar"),init_state.position,init_state.rotation);
-			addBar("Bar",init_state);
+			addBar("Cube",init_state);
 		}
 	}
 
