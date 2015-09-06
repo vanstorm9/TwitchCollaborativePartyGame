@@ -67,22 +67,21 @@ public class NetworkManager : MonoBehaviour {
 	// Displays the buttons GUI interface before start of the game
 	void OnGUI()
 	{
-		if (!Network.isClient && !Network.isServer)
-		{
-			if (GUI.Button(new Rect(100, 100, 250, 100), "Start Server"))
-				StartServer();
+		if (!Network.isClient && !Network.isServer) {
+			if (GUI.Button (new Rect (100, 100, 250, 100), "Start Server"))
+				StartServer ();
 			
-			if (GUI.Button(new Rect(100, 250, 250, 100), "Refresh Hosts"))
-				RefreshHostList();
+			if (GUI.Button (new Rect (100, 250, 250, 100), "Refresh Hosts"))
+				RefreshHostList ();
 			
-			if (hostList != null)
-			{
-				for (int i = 0; i < hostList.Length; i++)
-				{
-					if (GUI.Button(new Rect(400, 100 + (110 * i), 300, 100), hostList[i].gameName))
-						JoinServer(hostList[i]);
+			if (hostList != null) {
+				for (int i = 0; i < hostList.Length; i++) {
+					if (GUI.Button (new Rect (400, 100 + (110 * i), 300, 100), hostList [i].gameName))
+						JoinServer (hostList [i]);
 				}
 			}
+		} else {
+			GUILayout.Label ("Connections: " + Network.connections.ToString ());
 		}
 	}
 	
@@ -93,6 +92,8 @@ public class NetworkManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update() {
+
+		
 		//Call TwitchVoters to collect votes
 		if (Input.GetKey("return")) {
 			Debug.Log("Return!");
@@ -109,5 +110,6 @@ public class NetworkManager : MonoBehaviour {
 			}
 			Destroy(GameObject.Find(temp1));
 		}
+		
 	}
 }
