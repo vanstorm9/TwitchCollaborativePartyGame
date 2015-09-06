@@ -95,13 +95,10 @@ public class NetworkManager : MonoBehaviour {
 	void Update() {
 		//Call TwitchVoters to collect votes
 		if (Input.GetKey("return")) {
-			Debug.Log("Return!");
 			TwitchVotes collect = new TwitchVotes();
 			Dictionary<string, int> votes = collect.getVotes();
-			Debug.Log("End!");
 			string temp1 = ""; int temp = -1;
 			foreach (KeyValuePair<string, int> pair in votes) {
-				Debug.Log (pair.Key + " " + pair.Value);
 				if (pair.Value > temp) {
 					temp1 = pair.Key;
 					temp = pair.Value;

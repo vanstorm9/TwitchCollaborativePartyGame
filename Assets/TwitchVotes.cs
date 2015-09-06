@@ -3,37 +3,34 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Threading;
-public class TwitchVotes : MonoBehaviour {
+public class TwitchVotes  {
 
 	private int port;
 	string oauth;
 	string server;
-	private static string[] validVotes = { "a1", "a2" };
-	int gameTurn = 0, cooldown = 5;
+	private static string[] validVotes;
+	int gameTurn = 0, cooldown = 3;
 	bool timeUp = true;
 
-	// Use this for initialization
-	void Start() {
-		//ThreadStart ts = new ThreadStart(getUserInput);
-		//Thread thread = new Thread(ts);
-		//thread.Start();
-	}
-
-	// Update is called once per frame
-	void Update() {
-
-	}
-
-	public void clearVotes() {
-		voteList.Clear();
+	public TwitchVotes() { 
+		string[] names = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
+		List<string> tempList = new List<string>();
+		foreach(string letter in names){
+			string tempName = letter;
+			for(int i = 1; i <= 3; i++){
+				tempName = tempName + i;
+				tempList.Add(tempName);
+			}
+		}
+		validVotes = tempList.ToArray();
 	}
 
 	Dictionary<string, int> voteList = new Dictionary<string, int>();
 	public Dictionary<string, int> getVotes() {
-		float timeStamp = Time.time + cooldown;
-		while (timeStamp <= Time.time) { 
-			string vote = getUserInput();
-			if (!(vote.Equals("Timed out")) && !(voteList.ContainsKey(vote))) {
+		for(int i = 0; i < 3; i++){
+			Debug.Log(Time.time);
+			string vote = getUserInput();;
+			if (!(voteList.ContainsKey(vote)) && Array.Exists(validVotes, test => test.Equals(vote))) {
 				voteList.Add(vote, 1);
 			}
 			else if (voteList.ContainsKey(vote))
@@ -70,18 +67,14 @@ public class TwitchVotes : MonoBehaviour {
 
 			);
 		output.Flush();
-		try {
-			for (string rep = input.ReadLine(); ; rep = input.ReadLine()) {
-				string[] splitted = rep.Split(':');
-				if (splitted.Length > 2) {
-					string potentialVote = splitted[2];
-					if (Array.Exists(validVotes, vote => vote.Equals(potentialVote)))
-						return potentialVote;
+		for (string rep = input.ReadLine(); ; rep = input.ReadLine()) {
+			string[] splitted = rep.Split(':');
+			if (splitted.Length > 2) {					string potentialVote = splitted[2];
+				if (Array.Exists(validVotes, vote => vote.Equals(potentialVote))){
+					sock.Close();
+					return potentialVote;
 				}
 			}
-		}
-		catch {
-			return "Timed out";
 		}
 	}
 }
